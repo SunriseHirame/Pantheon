@@ -2,9 +2,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Hiramesaurus.Pantheon.Editor
+namespace Hirame.Pantheon.Editor
 {
-    [CustomPropertyDrawer (typeof (FloatRange))]
+    [CustomPropertyDrawer (typeof (FloatMinMax))]
     public class FloatRangeDrawer : PropertyDrawer
     {
         private SerializedProperty cachedProperty;

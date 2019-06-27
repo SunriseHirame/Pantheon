@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Hiramesaurus.Pantheon
+namespace Hirame.Pantheon
 {
     public sealed class TriggerEnterProxy : MonoBehaviour
     {

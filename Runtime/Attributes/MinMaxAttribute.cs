@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Hiramesaurus.Pantheon
+namespace Hirame.Pantheon
 {
     [AttributeUsage (AttributeTargets.Field)]
     public class MinMaxAttribute : System.Attribute
     {
-        public double Min { get; private set; }
-        public double Max { get; private set; }
+        public double Min { get; }
+        public double Max { get; }
         
         public MinMaxAttribute (double min, double max)
         {

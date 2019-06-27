@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
  
-namespace Hiramesaurus.Pantheon
+namespace Hirame.Pantheon
 {
     [System.Serializable]
     public sealed class UventCollider : UnityEvent<Collider>
@@ -19,7 +19,18 @@ namespace Hiramesaurus.Pantheon
     }
     
     [System.Serializable]
-    public sealed class UventBoolean : UnityEvent<bool>
+    public sealed class UventBool : UnityEvent<bool>
     {
     }
+    
+    [System.Serializable]
+    public sealed class UventInt : UnityEvent<int>
+    {
+    }
+    
+    [System.Serializable]
+    public sealed class UventFloat : UnityEvent<float>
+    {
+    }
+    
 }
