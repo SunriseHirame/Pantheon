@@ -27,9 +27,6 @@ namespace Hirame.Pantheon.Core
 
             gameSystems = new GameObject ("Game Systems", gameSystemTypes.ToArray ());
             gameSystems.hideFlags = HideFlags.HideAndDontSave;
-
-
-            Debug.Log ("CALLED");
         }
 
 #if UNITY_EDITOR
