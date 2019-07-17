@@ -6,17 +6,10 @@ namespace Hirame.Pantheon.Core
     public abstract class GameSystem<T> : GameSystem where T : GameSystem<T>
     {
         public static T Instance { get; private set; }
-
-        static GameSystem ()
-        {
-            print (typeof (T));
-            gameSystemTypes.Add (typeof (T));
-        }
     }
 
     public abstract class GameSystem : MonoBehaviour
     {
-        protected static readonly List<System.Type> gameSystemTypes = new List<System.Type> ();
         private static GameObject gameSystems;
 
         [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -25,14 +18,24 @@ namespace Hirame.Pantheon.Core
             if (gameSystems)
                 return;
 
-            gameSystems = new GameObject ("Game Systems", gameSystemTypes.ToArray ());
-            gameSystems.hideFlags = HideFlags.HideAndDontSave;
+            gameSystems = new GameObject ("Game Systems", AutoGameSystem.GameSystemTypes.ToArray ());
+            gameSystems.hideFlags = HideFlags.DontSave;
+
+            if (Application.isPlaying)
+                DontDestroyOnLoad (gameSystems);
+            
+            foreach (var t in AutoGameSystem.GameSystemTypes)
+            {
+                Debug.Log (t);
+            }
         }
 
 #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
+        //[UnityEditor.InitializeOnLoadMethod]
         private static void EditorInitialize ()
         {
+            if (gameSystems)
+                DestroyImmediate (gameSystems);
             Initialize ();
         }
 #endif
