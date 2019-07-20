@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Hirame.Pantheon.Core
@@ -10,24 +11,28 @@ namespace Hirame.Pantheon.Core
 
     public abstract class GameSystem : MonoBehaviour
     {
-        private static GameObject gameSystems;
+        protected static GameObject gameSystems;
 
+#if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSceneLoad)]
+#else
+        [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSplashScreen)]
+#endif
         private static void Initialize ()
         {
             if (gameSystems)
                 return;
 
-            gameSystems = new GameObject ("Game Systems", AutoGameSystem.GameSystemTypes.ToArray ());
+            var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies ()
+                from assemblyType in domainAssembly.GetTypes ()
+                where typeof (GameSystem).IsAssignableFrom (assemblyType) && !assemblyType.IsAbstract
+                select assemblyType).ToArray ();
+
+            gameSystems = new GameObject ("Game Systems", listOfBs);
             gameSystems.hideFlags = HideFlags.DontSave;
 
             if (Application.isPlaying)
                 DontDestroyOnLoad (gameSystems);
-            
-            foreach (var t in AutoGameSystem.GameSystemTypes)
-            {
-                Debug.Log (t);
-            }
         }
 
 #if UNITY_EDITOR
