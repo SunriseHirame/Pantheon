@@ -11,6 +11,8 @@ namespace Hirame.Pantheon
         public float Min;
         public float Max;
         
+        public static FloatMinMax Default => new FloatMinMax (0, 1);
+        
         public FloatMinMax (float min, float max)
         {
             Min = min;
