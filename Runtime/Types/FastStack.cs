@@ -8,22 +8,28 @@ namespace Hirame.Pantheon
         private int itemCount;
         private int capacity;
 
+        public int Count => itemCount;
+        public int Capacity => capacity;
+
+        public bool HasRoom => capacity > itemCount;
+
         public FastStack (int startCapacity)
         {
             capacity = startCapacity;
+            items = new T[startCapacity];
         }
 
         public void Push (T item)
         {
-            if (itemCount == capacity)
+            if (!HasRoom)
                 throw new IndexOutOfRangeException ("Capacity reached");
-            
+
             items[itemCount++] = item;
         }
 
         public T Pop ()
         {
-            return itemCount == 0 ? default : items[itemCount--];
+            return itemCount == 0 ? default : items[--itemCount];
         }
 
         public void Resize (int newCapacity)
@@ -31,5 +37,4 @@ namespace Hirame.Pantheon
             Array.Resize (ref items, newCapacity);
         }
     }
-
 }
