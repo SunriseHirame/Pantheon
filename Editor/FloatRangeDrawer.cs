@@ -18,48 +18,51 @@ namespace Hirame.Pantheon.Editor
                 cachedProperty = property;
                 minMax = fieldInfo.GetCustomAttribute<MinMaxAttribute> ();
             }
-            
+
             var rect = EditorGUI.PrefixLabel (position, label);
-            rect.x -= 16;
             
             var minProp = property.FindPropertyRelative ("Min");
             var maxProp = property.FindPropertyRelative ("Max");
             
             if (minMax != null)
             {
-                DrawMinMax (rect, minProp, maxProp);
+                DrawMinMax (ref rect, minProp, maxProp);
             }
             else
             {
                 var subLabelRect = rect;
                 subLabelRect.width = 40;
+                subLabelRect.y += 2;
+                
                 EditorGUI.LabelField (subLabelRect, "Min");
+                
+                subLabelRect.y += 2;
                 subLabelRect.x += rect.width / 2f;
+                
                 EditorGUI.LabelField (subLabelRect, "Max");
             }
         }
 
-        private void DrawMinMax (Rect contentRect, SerializedProperty minProp, SerializedProperty maxProp)
+        private void DrawMinMax (ref Rect lineRect, SerializedProperty minProp, SerializedProperty maxProp)
         {
-            var subLabelRect = contentRect;
-            var fieldRect = contentRect;
-            contentRect = PadRectRight (contentRect, 80, 72);
-
-            subLabelRect.width = 40;
-            EditorGUI.LabelField (subLabelRect, "Min");
+            var minField = lineRect;
+            minField.y += 2;
+            minField.width = 40;
             
-            fieldRect.x += 32;
-            fieldRect.width = 60;
-            var minValue = EditorGUI.FloatField (fieldRect, minProp.floatValue);
-
-            fieldRect.x = contentRect.x + contentRect.width;
-            subLabelRect.x = fieldRect.x + fieldRect.width - 16;
-            EditorGUI.LabelField (subLabelRect, "Max");
-            var maxValue = EditorGUI.FloatField (fieldRect, maxProp.floatValue);
-
+            var maxField = lineRect;
+            maxField.y += 2;
+            maxField.x += lineRect.width - 40;
+            maxField.width = 40;
             
-            EditorGUI.MinMaxSlider (
-                contentRect, ref minValue, ref maxValue, (float) minMax.Min, (float) minMax.Max);
+            var sliderRect = lineRect;
+            sliderRect.y += 2;
+            sliderRect.x += 48;
+            sliderRect.width -= 96;
+            
+            var minValue = EditorGUI.FloatField (minField, minProp.floatValue);
+            var maxValue = EditorGUI.FloatField (maxField, maxProp.floatValue);
+
+            EditorGUI.MinMaxSlider (sliderRect, ref minValue, ref maxValue, (float) minMax.Min, (float) minMax.Max);
 
             minProp.floatValue = minValue;
             maxProp.floatValue = maxValue;
@@ -69,14 +72,7 @@ namespace Hirame.Pantheon.Editor
         {
             return minMax == null ? EditorGUIUtility.singleLineHeight : EditorGUIUtility.singleLineHeight * 2f;
         }
-
-        private static Rect PadRectRight (in Rect rect, float amount, float shorten = 0)
-        {
-            var r = new Rect(rect);
-            r.x += amount;
-            r.width -= amount + shorten;
-            return r;
-        }
+        
     }
 
 }
