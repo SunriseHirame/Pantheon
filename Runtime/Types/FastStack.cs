@@ -35,6 +35,7 @@ namespace Hirame.Pantheon
         public void Resize (int newCapacity)
         {
             Array.Resize (ref items, newCapacity);
+            capacity = newCapacity;
         }
     }
 }
