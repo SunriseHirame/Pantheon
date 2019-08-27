@@ -45,7 +45,7 @@ namespace Hirame.Pantheon
         
         public void FillWithItems ()
         {
-            
+            Debug.Log ("[ObjectPool::FillWithItems: Not implemented!");
         }
     }
     
@@ -75,6 +75,7 @@ namespace Hirame.Pantheon
                     return;
                 
                 pool.Resize (pool.Capacity * 2);
+                Debug.Log ($"[GameObjectPool::AddItem]: Pool Resized to {pool.Capacity}");
             }
 
             trackedObjects++;
@@ -97,8 +98,22 @@ namespace Hirame.Pantheon
         {
             var hasItems = pool.Count > 0;
             item = hasItems ? pool.Pop () : default;
+
+            if (item == false && allowExpansion)
+            {
+                pool.Resize (pool.Capacity + 10);
+                FillWithItems (10);
+            }
             
             return hasItems;
+        }
+
+        public void Expand (int targetCount)
+        {
+            if (pool.Capacity >= targetCount)
+                return;
+            
+            pool.Resize (targetCount);
         }
 
         public void FillWithItems ()
