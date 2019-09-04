@@ -56,13 +56,15 @@ namespace Hirame.Pantheon
         private readonly bool allowExpansion;
 
         private int trackedObjects;
+        private bool prefill;
 
         public T Proto => proto;
         
-        public GameObjectPool (T item, int startCapacity, bool allowExpansion)
+        public GameObjectPool (T item, int startCapacity, bool prefill, bool allowExpansion)
         {
             proto = item;
             this.allowExpansion = allowExpansion;
+            this.prefill = prefill;
             
             pool = new FastStack<T> (startCapacity);
         }
@@ -80,7 +82,7 @@ namespace Hirame.Pantheon
 
             trackedObjects++;
             pool.Push (item);
-
+            
             if (!deactivate)
                 return;
             
@@ -91,6 +93,12 @@ namespace Hirame.Pantheon
         
         public T GetItem ()
         {
+            if (pool.Count > 0)
+                return pool.Pop ();
+            
+            if (allowExpansion && prefill)
+                Expand (pool.Capacity * 2);
+            
             return pool.Count > 0 ? pool.Pop () : default;
         }
 
@@ -99,7 +107,7 @@ namespace Hirame.Pantheon
             var hasItems = pool.Count > 0;
             item = hasItems ? pool.Pop () : default;
 
-            if (item == false && allowExpansion)
+            if (item == false && allowExpansion && prefill)
             {
                 pool.Resize (pool.Capacity + 10);
                 FillWithItems (10);
@@ -114,6 +122,9 @@ namespace Hirame.Pantheon
                 return;
             
             pool.Resize (targetCount);
+            
+            if (prefill)
+                FillWithItems ();
         }
 
         public void FillWithItems ()
