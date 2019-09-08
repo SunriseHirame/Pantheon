@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Hirame.Pantheon
 {
-    public sealed class ObjectPool<T> where T : new()
+    public sealed class ObjectPool<T> : IObjectPool
+        where T : class, new()
     {
         private readonly FastStack<T> pool;
         private readonly T proto;
@@ -49,7 +50,8 @@ namespace Hirame.Pantheon
         }
     }
     
-    public sealed class GameObjectPool<T> where T : Component
+    public sealed class GameObjectPool<T> : IObjectPool 
+        where T : Component
     {
         private readonly FastStack<T> pool;
         private readonly T proto;
