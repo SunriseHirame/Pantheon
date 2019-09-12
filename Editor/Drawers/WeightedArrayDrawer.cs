@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 namespace Hirame.Pantheon.Editor
@@ -116,7 +117,7 @@ namespace Hirame.Pantheon.Editor
             weights.InsertArrayElementAtIndex (insertPlace);
             locked.InsertArrayElementAtIndex (insertPlace);
             
-            weights.GetArrayElementAtIndex (insertPlace).floatValue = 1f / (insertPlace + 1);
+            weights.GetArrayElementAtIndex (insertPlace).floatValue = 1f / math.max (insertPlace, 1f);
         }
         
         private static void ClearItems (SerializedProperty items, SerializedProperty weights, SerializedProperty locked)

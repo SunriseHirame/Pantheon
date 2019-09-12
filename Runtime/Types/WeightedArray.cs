@@ -50,8 +50,21 @@ namespace Hirame.Pantheon
             if (weights == null || weights.Length == 0)
                 return;
             
-            var totalWeight = weights.Sum ();
-
+            var totalWeight = 0f;
+            var lockedWeight = 0f;
+            
+            for (var i = 0; i < weights.Length; i++)
+            {
+                if (locked[i])
+                {
+                    lockedWeight += weights[i];
+                }
+                else
+                {
+                    totalWeight += weights[i];
+                }
+            }
+            
             if (totalWeight <= 0)
             {
                 EqualizeWeights ();
@@ -60,7 +73,11 @@ namespace Hirame.Pantheon
             
             for (var i = 0; i < weights.Length; i++)
             {
-                weights[i] /= totalWeight;
+                if (!locked[i])
+                {
+                    weights[i] /= totalWeight;
+                    weights[i] -= weights[i] * lockedWeight;
+                }
             }
         }
         
