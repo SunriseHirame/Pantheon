@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Hirame.Pantheon
 {
-    public class LifeCycleOnUpdate : LifeCycleEventBase
+    public class LifeCycleOnUpdate : LifeCycleEventBase, IWrapUpUpdate
     {
         [SerializeField, Min (0)] private float spacing = 0.5f;
 
@@ -12,11 +12,15 @@ namespace Hirame.Pantheon
         private void OnEnable ()
         {
             nextPlayTime = Time.time + delay;
+            UpdateLoop.RegisterForUpdate (this);
         }
 
-        // TODO:
-        // Replace with a lighter recurrency model
-        private void Update ()
+        private void OnDisable ()
+        {
+            UpdateLoop.UnregisterForUpdate (this);
+        }
+
+        void IWrapUpUpdate.OnWarpUpUpdate ()
         {
             var time = Time.time;
 
