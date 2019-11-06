@@ -58,12 +58,14 @@ namespace Hirame.Pantheon
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChange;
             EditorApplication.playModeStateChanged += OnPlayModeChange;
+
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                Init ();
         }
         
         [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init ()
-        {
-            
+        {        
             var updateLoop = PlayerLoop.GetDefaultPlayerLoop ();
 
             var gameSystemUpdateLoop = new PlayerLoopSystem
