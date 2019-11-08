@@ -1,33 +1,64 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = System.Random;
 
 namespace Hirame.Pantheon
 {
-	[Serializable]
+	[Serializable, StructLayout (LayoutKind.Explicit)]
 	public struct Suid : IEquatable<Suid>
     {
         private static readonly Random prng = new Random ();
         private static readonly DateTime originDate = new DateTime (637001154690000000);
 
-        [SerializeField, HideInInspector]
-        private byte
-            b1, b2, b3, b4,
-            b5, b6, b7, b8;
+        [HideInInspector, FieldOffset (0)]
+        [SerializeField] private long fullValue;
+        
+        [FieldOffset (sizeof (byte) * 0)]
+        private readonly byte b0;
+        
+        [FieldOffset (sizeof (byte) * 1)]
+        private readonly byte b1;
+        
+        [FieldOffset (sizeof (byte) * 2)]
+        private readonly byte b2;
+        
+        [FieldOffset (sizeof (byte) * 3)]
+        private readonly byte b3;
+        
+        [FieldOffset (sizeof (byte) * 4)]
+        private readonly byte b4;
+        
+        [FieldOffset (sizeof (byte) * 5)]
+        private readonly byte b5;
+        
+        [FieldOffset (sizeof (byte) * 6)]
+        private readonly byte b6;
+        
+        [FieldOffset (sizeof (byte) * 7)]
+        private readonly byte b7;
+           
 
         private Suid (
-            byte b1, byte b2, byte b3, byte b4,
-            byte b5, byte b6, byte b7, byte b8)
+            byte b0, byte b1, byte b2, byte b3,
+            byte b4, byte b5, byte b6, byte b7)
         {
+            fullValue = 0;
+            
+            this.b0 = b0;
             this.b1 = b1;
             this.b2 = b2;
             this.b3 = b3;
-            this.b4 = b4;
 
+            this.b4 = b4;
             this.b5 = b5;
             this.b6 = b6;
             this.b7 = b7;
-            this.b8 = b8;
+        }
+        
+        public bool IsValid ()
+        {
+            return fullValue != 0;
         }
         
         public static Suid CreateNew ()
@@ -35,12 +66,12 @@ namespace Hirame.Pantheon
             var random = (uint) (prng.NextDouble () * uint.MaxValue);
             var time = DateTime.Now.Ticks - originDate.Ticks;
 
-            var r1 = (byte) (random >> 0);
+            var r1 = (byte) (random);
             var r2 = (byte) (random >> 4);
             var r3 = (byte) (random >> 8);
             var r4 = (byte) (random >> 12);
             
-            var t1 = (byte) (time >> 0);
+            var t1 = (byte) (time);
             var t2 = (byte) (time >> 4);
             var t3 = (byte) (time >> 8);
             var t4 = (byte) (time >> 12);
@@ -50,29 +81,22 @@ namespace Hirame.Pantheon
         
         public bool Equals (Suid other)
         {
-            return b1 == other.b1
-                   && b2 == other.b2
-                   && b3 == other.b3
-                   && b4 == other.b4
-                   && b5 == other.b5
-                   && b6 == other.b6
-                   && b7 == other.b7
-                   && b8 == other.b8;
+            return fullValue == other.fullValue;
         }
 
         public override string ToString ()
         {
             var r = 0;
-            r |= b1 << 0;
-            r |= b2 << 4;
-            r |= b3 << 8;
-            r |= b4 << 12;
+            r |= b0;
+            r |= b1 << 4;
+            r |= b2 << 8;
+            r |= b3 << 12;
             
             var t = 0;
-            t |= b5 << 0;
-            t |= b6 << 4;
-            t |= b7 << 8;
-            t |= b8 << 12;
+            t |= b4;
+            t |= b5 << 4;
+            t |= b6 << 8;
+            t |= b7 << 12;
             
             return $"{r.ToString("X5")}-{t.ToString("X5")}";
         }
