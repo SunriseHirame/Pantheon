@@ -23,17 +23,25 @@ namespace Hirame.Pantheon
         
         public Vector2 AsVector2 () => new Vector2 (Min, Max);
 
-
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
         public static FloatMinMax FromVector2 (in Vector2 source)
         {
             return new FloatMinMax(source.x, source.y);
         }
-
+    }
+    
+    public static class FloatRangeExtensions
+    {
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
-        public static FloatMinMax Clamped (FloatMinMax minMax, float min, float max)
+        public static FloatMinMax Clamped (in this FloatMinMax minMax, float min, float max)
         {
             return new FloatMinMax (math.max (minMax.Min, min), math.min (minMax.Max, max));
+        }
+
+        [MethodImpl (MethodImplOptions.AggressiveInlining)]
+        public static float Remap (this in FloatMinMax minMax, float t)
+        {
+            return minMax.Min + (minMax.Max - minMax.Min) * t;
         }
     }
 
