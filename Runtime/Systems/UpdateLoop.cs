@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
@@ -52,18 +51,6 @@ namespace Hirame.Pantheon
                     break;
             }
         }
-
-#if UNITY_EDITOR
-        [InitializeOnLoadMethod]
-        private static void EditorInit ()
-        {
-            EditorApplication.playModeStateChanged -= OnPlayModeChange;
-            EditorApplication.playModeStateChanged += OnPlayModeChange;
-
-            if (!EditorApplication.isPlayingOrWillChangePlaymode)
-                Init ();
-        }    
-#endif
 
         [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init ()
@@ -133,17 +120,6 @@ namespace Hirame.Pantheon
             systems[index] = entry;
         }
 
-        private static void OnPlayModeChange (PlayModeStateChange playModeStateChange)
-        {
-            if (playModeStateChange == PlayModeStateChange.ExitingEditMode
-                || playModeStateChange == PlayModeStateChange.EnteredEditMode)
-            {
-                gameSystemUpdate.Clear ();
-                earlyUpdate.Clear ();
-                warpUpUpdate.Clear ();
-            }
-        }
-        
         private static void GameSystemUpdate ()
         {
             Profiler.BeginSample ("GameSystemUpdate");
@@ -187,6 +163,29 @@ namespace Hirame.Pantheon
             }
             Profiler.EndSample ();
         }
+        
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void EditorInit ()
+        {
+            UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeChange;
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeChange;
+
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+                Init ();
+        }    
+        
+        private static void OnPlayModeChange (UnityEditor.PlayModeStateChange playModeStateChange)
+        {
+            if (playModeStateChange == UnityEditor.PlayModeStateChange.ExitingEditMode
+                || playModeStateChange == UnityEditor.PlayModeStateChange.EnteredEditMode)
+            {
+                gameSystemUpdate.Clear ();
+                earlyUpdate.Clear ();
+                warpUpUpdate.Clear ();
+            }
+        }
+#endif
     }
 
 }
