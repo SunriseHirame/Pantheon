@@ -10,17 +10,13 @@ namespace Hirame.Pantheon.Editor
         private GUIContent minLabel = new GUIContent ("Min");
         private GUIContent maxLabel = new GUIContent ("Max");
         
-        private MinMaxAttribute minMax;
-        
         public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
         {
-            minMax = fieldInfo.GetCustomAttribute<MinMaxAttribute> ();
+            var minMax = fieldInfo.GetCustomAttribute<MinMaxAttribute> ();
             position.height = EditorGUIUtility.singleLineHeight;
             
             var contentRect = EditorGUI.PrefixLabel (position, label);
-            contentRect.x -= 30;
-            contentRect.width += 30;
-            
+
             var minProp = property.FindPropertyRelative ("Min");
             var maxProp = property.FindPropertyRelative ("Max");
             var sliderRect = contentRect;
@@ -35,12 +31,12 @@ namespace Hirame.Pantheon.Editor
             
             if (minMax != null)
             {
-                sliderRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                DrawMinMax (ref sliderRect, minProp, maxProp);
+                //sliderRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                //DrawMinMax (ref sliderRect, minMax, minProp, maxProp);
             }
         }
 
-        private void DrawMinMax (ref Rect lineRect, SerializedProperty minProp, SerializedProperty maxProp)
+        private void DrawMinMax (ref Rect lineRect, MinMaxAttribute minMax, SerializedProperty minProp, SerializedProperty maxProp)
         {
             var sliderRect = lineRect;
 
@@ -55,12 +51,6 @@ namespace Hirame.Pantheon.Editor
 
             minProp.floatValue = minValue;
             maxProp.floatValue = maxValue;
-        }
-
-        public override float GetPropertyHeight (SerializedProperty property, GUIContent label)
-        {
-            var isMinMax = fieldInfo.GetCustomAttribute<MinMaxAttribute> () != null;
-            return base.GetPropertyHeight (property, label) * (isMinMax ? 2 : 1);
         }
     }
 }
