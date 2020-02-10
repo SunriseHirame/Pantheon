@@ -1,18 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
-public class Command : MonoBehaviour
+namespace Hirame.Pantheon
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface ICommand
     {
-        
+        void Resolve ();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public struct Command : ICommand
     {
+        private readonly Action action;
         
+        public void Resolve ()
+        {
+            action?.Invoke ();
+        }
     }
+    
 }
