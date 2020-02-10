@@ -53,6 +53,7 @@ namespace Hirame.Pantheon
             }
         }
 
+#if UNITY_EDITOR
         [InitializeOnLoadMethod]
         private static void EditorInit ()
         {
@@ -61,8 +62,9 @@ namespace Hirame.Pantheon
 
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
                 Init ();
-        }
-        
+        }    
+#endif
+
         [RuntimeInitializeOnLoadMethod (RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init ()
         {        
