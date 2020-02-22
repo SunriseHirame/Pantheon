@@ -13,13 +13,13 @@
 
         private static T CreateNewInstance ()
         {
-            var newInstance = new T ();
+            instance = new T ();
             
-            if (newInstance is IUpdate updateable)
+            if (instance is IUpdate updateable)
                 UpdateLoop.RegisterForUpdate (updateable);
 
             instance.OnCreated ();
-            return newInstance;
+            return instance;
         }
         
         public static void Dispose ()
